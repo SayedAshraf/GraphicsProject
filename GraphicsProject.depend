@@ -1,0 +1,27 @@
+# depslib dependency file v1.0
+1493715972 source:c:\users\sayed\graphicsproject\main.cpp
+	<windows.h>
+	<commctrl.h>
+	<stdio.h>
+	<windows.h>
+	"resource.h"
+	"Functions.h"
+	<bits/stdc++.h>
+
+1493714908 c:\users\sayed\graphicsproject\resource.h
+	<tchar.h>
+
+1493716914 c:\users\sayed\graphicsproject\functions.h
+	<Windows.h>
+	<stdio.h>
+	<math.h>
+	<stack>
+	<queue>
+	<vector>
+	<fstream>
+	<string>
+	<sstream>
+	<algorithm>
+	<string>
+	<bits/stdc++.h>
+
