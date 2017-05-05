@@ -7,10 +7,7 @@
 #include <bits/stdc++.h>
 
 using namespace std;
-
-
-//bool BDrawLine = false;
-//bool BDrawLineDDA = false;
+HRGN rgnMain, rgnCaptionbar;
 
 /*  Declare Windows procedure  */
 LRESULT CALLBACK WindowProcedure (HWND, UINT, WPARAM, LPARAM);
@@ -25,7 +22,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 {
     WNDCLASSEX  wincl;        /* Data structure for the windowclass */
     HWND hwnd;               /* This is the handle for our window */
-    HDC hdc;
     MSG messages;            /* Here messages to the application are saved */
 
     /* The Window structure */
@@ -43,6 +39,7 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     wincl.cbClsExtra = 0;                      /* No extra bytes after the window class */
     wincl.cbWndExtra = 0;                      /* structure or the window instance */
 
+
     /* Use Windows's default colour as the background of the window */
     wincl.hbrBackground = (HBRUSH) GetStockObject(white);
 
@@ -59,16 +56,20 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
                //WS_SYSMENU, /* default window */
                CW_USEDEFAULT,       /* Windows decides the position */
                CW_USEDEFAULT,       /* where the window ends up on the screen */
-               544,                 /* The programs width */
-               375,                 /* and height in pixels */
+               700,                 /* The programs width */
+               450,                 /* and height in pixels */
                HWND_DESKTOP,        /* The window is a child-window to desktop */
                NULL,                /* No menu */
                hThisInstance,       /* Program Instance handler */
                NULL                 /* No Window Creation data */
            );
+    //Create regions
+    rgnMain = CreateRectRgn(0, 0, 700, 450);
+    rgnCaptionbar = CreateRectRgn(0, 0, 700, 700);
 
     /* Make the window visible on the screen */
     ShowWindow (hwnd, nCmdShow);
+    UpdateWindow(hwnd);
 
     /* Run the message loop. It will run until GetMessage() returns 0 */
     while (GetMessage (&messages, NULL, 0, 0))
@@ -80,7 +81,6 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
     }
 
     /* The program return-value is 0 - The value that PostQuitMessage() gave */
-    ChangeBackground(hdc , white , hwnd);
     return messages.wParam;
 }
 
@@ -88,26 +88,86 @@ int WINAPI WinMain (HINSTANCE hThisInstance,
 
 LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+//Variables
+    bool WIREFRAME = false;
+
     HDC hdc;
     hdc = GetDC(hwnd);
     int static wmID;
-    static int ch ;
+    static int ch =0;
     int static points = 0;
     string static str, Color;
     int x, y;
     wmID = LOWORD(wParam);
-    vector <string> static saved;
     vector <point> static Points;
-    switch (message)                  /* handle the messages */
+
+    /* handle the messages */
+    switch (message)
     {
-
-
+    case WM_LBUTTONDOWN:
+        x = (LOWORD(lParam));
+        y = (HIWORD(lParam));
+        SetPixel(hdc,x,y,color);
+        //DrawPoint(hdc, x, y, ColorSize);
+        points++;
+        Points.push_back(point(x, y));
+        if (ch == 0 )
+        {
+            Points.clear();
+            points=0;
+        }
+        else if (points == 2 && ch >=1 && ch <=10)
+        {
+            if(ch ==1 )
+                LineDDA(hdc,Points);
+            else if(ch == 2 )
+                LineSimple(hdc,Points);
+            else if(ch == 3 )
+                LineBresenham(hdc,Points);
+            else if(ch == 4 )
+                LineBresenham(hdc,Points);
+            else if(ch == 5 )
+                Cartesian(hdc,Points);
+            else if(ch == 6 )
+                Cartesian(hdc,Points);
+            else if(ch == 7 )
+                CirclePolar(hdc,Points);
+            else if(ch == 8 )
+                CircleIterativePolar(hdc,Points);
+            else if(ch == 9 )
+                CircleBresenham(hdc,Points);
+            else if(ch == 10 )
+                FirstDegreeCurve(hdc,Points);
+            points = 0 ;
+            Points.clear();
+        }
+        else if (points==4 && ch >=11 && ch<=14)
+        {
+            if(ch == 11)
+                SecondDegreeCurve(hdc,Points);
+            else if(ch == 12 )
+                CurveHermite(hdc , Points);
+            else if(ch == 13 )
+                CurveBezier(hdc,Points);
+            else if(ch == 14)
+                CardinalSpline(hdc,Points);
+            points = 0 ;
+            Points.clear();
+        }
+        break;
+//    case WM_RBUTTONDOWN:
+//        convexFill(hdc,points);
+//        points=0;
+//        ReleaseDC(hwnd, hdc);
+//        break;
     case WM_COMMAND:
         switch(wmID)
         {
+
         ///Case File
         case IDM_FILE_EXIT:
             PostMessage(hwnd, WM_CLOSE, 0, 0);
+            DestroyWindow(hwnd);
             break;
         case IDM_FILE_CLEAR:
             background = defultColor;
@@ -156,7 +216,6 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         case IDM_COLOR_WHITE:
             color = white;
             break;
-
         ///Case BackGrounds
         case IDM_BACKGROUND_BLACK:
             background = black;
@@ -203,6 +262,20 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
             ChangeBackground(hdc,background , hwnd);
             break;
 
+        ///Color Size
+        case IDM_COLORSIZE_1:
+            ColorSize = 1;
+            break;
+        case IDM_COLORSIZE_2:
+            ColorSize = 2;
+            break;
+        case IDM_COLORSIZE_3:
+            ColorSize = 3;
+            break;
+        case IDM_COLORSIZE_4:
+            ColorSize = 4;
+            break;
+
         /// Algorithms Cases
         case ID_LINE_DDA:
             ch = 1 ;
@@ -219,58 +292,39 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
         case IDM_CIRCLE_PARAMETRIC:
             ch= 5;
             break;
-
         case IDM_CIRCLE_CARTESIAN:
             ch= 6;
             break;
         case IDM_CIRCLE_POLAR:
             ch= 7;
             break;
-
         case IDM_CIRCLE_ITERATIVEPOLAR:
             ch= 8;
             break;
-
         case IDM_CIRCLE_MIDPOINT:
             ch= 9;
             break;
-
+        case IDM_CURVE_FIRSTDEGREE:
+            ch = 10;
+            break;
+        case IDM_CURVE_SECONDDEGREE:
+            ch = 11;
+            break;
+        case IDM_CURVE_HERMITE:
+            ch = 12;
+            break;
+        case IDM_CURVE_BEZIER:
+            ch = 13;
+            break;
+        case IDM_CURVE_SPLINES:
+            ch=14;
+            break;
+        case IDM_FILLING_CONVEX:
+            ch=15;
+            break;
         default:
             return DefWindowProc (hwnd, message, wParam, lParam);
-            break;
         }
-        break;
-    case WM_LBUTTONDOWN:
-        x = (LOWORD(lParam));
-        y = (HIWORD(lParam));
-        points++;
-        Points.push_back(point(x, y));
-        if (points == 2 && ch >=1 && ch <=9)
-        {
-            if(ch ==1 )
-                LineDDA(hdc,Points);
-            else if(ch == 2 )
-                LineSimple(hdc,Points);
-            else if(ch == 3 )
-                LineBresenham(hdc,Points);
-            else if(ch == 4 )
-                Midpoint(hdc,Points);
-            else if(ch == 5 )
-                Cartesian(hdc,Points);
-            else if(ch == 6 )
-                Cartesian(hdc,Points);
-            else if(ch == 7 )
-                CirclePolar(hdc,Points);
-            else if(ch == 8 )
-                CircleIterativePolar(hdc,Points);
-            else if(ch == 9 )
-                CircleBresenham(hdc,Points);
-
-
-            points = 0 ;
-            Points.clear();
-        }
-
         break;
     ///Creating menu bar and Set icons
     case WM_CREATE:
@@ -283,6 +337,5 @@ LRESULT CALLBACK WindowProcedure (HWND hwnd, UINT message, WPARAM wParam, LPARAM
     default:                      /* for messages that we don't deal with */
         return DefWindowProc (hwnd, message, wParam, lParam);
     }
-
     return 0;
 }

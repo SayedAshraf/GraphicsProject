@@ -5,7 +5,12 @@
 #endif
 #include <tchar.h>
 #define _WIN32_WINNT 0x0501
+#include <bits/stdc++.h>
+typedef int cubicMatrix[4][4];
+typedef int squareMatrix[3][3];
+typedef int table[1000][2];
 
+///Colors
 HINSTANCE h;
 COLORREF white = RGB(255, 255, 255);
 COLORREF black = RGB(0, 0, 0);
@@ -22,22 +27,16 @@ COLORREF navy = RGB(0, 0, 128);
 COLORREF color = black;
 COLORREF background = white;
 COLORREF static defultColor = white ;
+int static ColorSize = 1;
 
-typedef int cubicMatrix[4][4];
-typedef int squareMatrix[3][3];
-typedef int table[1000][2];
-table T;
-
+///File identifiers
 #define IDM_FILE_EXIT 9001
-#define IDM_COLOR_GO 9002
-#define IDM_ALGORITHMS_CIRCLE 9003
-#define IDM_FILE_OPEN 9004
-#define IDM_FILE_CLEAR 9005
-#define IDM_FILE_LOAD 9006
-#define IDM_FILE_SAVE 9007
-#define IDM_BACKGROUND_RED 9008
+#define IDM_FILE_CLEAR 9002
+#define IDM_FILE_LOAD 9003
+#define IDM_FILE_SAVE 9004
 
 ///BackGround identifiers
+#define IDM_BACKGROUND_RED 9008
 #define IDM_BACKGROUND_GREEN 9009
 #define IDM_BACKGROUND_WHITE 9010
 #define IDM_BACKGROUND_BLACK 9011
@@ -62,22 +61,36 @@ table T;
 #define IDM_COLOR_BLUE 9028
 #define IDM_COLOR_LIME 9029
 
-///Algorithms identifiers
+///Line identifiers
 #define ID_LINE_SIMPLEMETHOD 9030
 #define ID_LINE_DDA 9031
 #define ID_LINE_MIDPOINT 9032
 #define ID_LINE_BRESESENHA 9033
+
+///Circle identifiers
 #define IDM_CIRCLE_PARAMETRIC 9034
 #define IDM_CIRCLE_CARTESIAN 9035
 #define IDM_CIRCLE_POLAR 9036
 #define IDM_CIRCLE_ITERATIVEPOLAR 9037
 #define IDM_CIRCLE_MIDPOINT 9038
+
+///Curve identifiers
 #define IDM_CURVE_FIRSTDEGREE 9039
 #define IDM_CURVE_SECONDDEGREE 9040
 #define IDM_CURVE_HERMITE 9041
 #define IDM_CURVE_BEZIER 9042
 #define IDM_CURVE_SPLINES 9043
+
+///Filling and Clipping identifiers
 #define IDM_FILLING_CONVEX 9044
 #define IDM_CLIPPING_POINT 9045
 #define IDM_CLIPPING_LINE 9046
 #define IDM_CLIPPING_POLYGON 9047
+
+///Color Size identifiers
+#define IDM_COLORSIZE_1 9048
+#define IDM_COLORSIZE_2 9049
+#define IDM_COLORSIZE_3 9050
+#define IDM_COLORSIZE_4 9051
+
+

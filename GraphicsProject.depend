@@ -25,3 +25,21 @@
 	<string>
 	<bits/stdc++.h>
 
+1493977884 source:c:\users\sayed\desktop\work\graphicsproject\main.cpp
+	<windows.h>
+	<commctrl.h>
+	<stdio.h>
+	<windows.h>
+	"resource.h"
+	"Functions.h"
+	<bits/stdc++.h>
+
+1493975957 c:\users\sayed\desktop\work\graphicsproject\resource.h
+	<tchar.h>
+	<bits/stdc++.h>
+
+1493977362 c:\users\sayed\desktop\work\graphicsproject\functions.h
+	<Windows.h>
+	<stdio.h>
+	<bits/stdc++.h>
+
